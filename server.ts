@@ -181,6 +181,11 @@ app.post('/api/send-report', async (req, res) => {
       </style>
     </head>
     <body>
+      <!-- Preheader (Inbox Preview Text) -->
+      <div style="display: none; max-height: 0px; overflow: hidden; font-size: 1px; line-height: 1px; color: #fff; opacity: 0;">
+        Here is your custom conversion scorecard and your Master Checklist PDF guide. Open to review your findings.
+      </div>
+
       <div class="container">
         <div class="header">
           <div class="badge">Diagnostic Complete</div>
