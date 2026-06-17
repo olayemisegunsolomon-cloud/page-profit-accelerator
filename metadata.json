@@ -1,0 +1,6 @@
+{
+  "name": "Page Profit Accelerator",
+  "description": "High-performance DTC revenue leaks assessment and profit optimization score generator.",
+  "requestFramePermissions": ["camera", "microphone"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

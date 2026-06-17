@@ -1,0 +1,223 @@
+@import url('https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-anton: 'Anton', sans-serif;
+  --color-primary-green: #00ff66;
+  --color-dark-bg: #050505;
+  --color-surface-panel: #111111;
+  --color-surface-border: #1a1a1a;
+}
+
+body {
+  background-color: #050505;
+  color: #e5e2e1;
+  font-family: var(--font-sans);
+}
+
+.bg-grid-tech {
+  background-size: 40px 40px;
+  background-image: 
+    radial-gradient(circle at 2px 2px, rgba(0, 255, 102, 0.04) 1px, transparent 0);
+}
+
+/* Let's clear out all light overrides, setting theme colors to beautiful neon cosmic slate */
+
+.bg-dark-bg {
+  background-color: #050505 !important;
+}
+
+header.bg-black\/75 {
+  background-color: rgba(5, 5, 5, 0.85) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+}
+
+header.bg-black\/80, header.bg-black\/85 {
+  background-color: rgba(5, 5, 5, 0.9) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+.bg-zinc-950, .bg-zinc-950\/80, .bg-zinc-950\/60, .bg-zinc-950\/50 {
+  background-color: #0c0c0d !important;
+  border: 1px solid rgba(255, 255, 255, 0.05) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5) !important;
+}
+
+.bg-zinc-900, .bg-zinc-900\/60, .bg-zinc-900\/50, .bg-zinc-900\/40 {
+  background-color: #121214 !important;
+  border: 1px solid rgba(255, 255, 255, 0.04) !important;
+}
+
+.bg-black, .bg-neutral-950, .bg-black\/40, .bg-black\/50, .bg-black\/60 {
+  background-color: #050505 !important;
+  border: 1px solid rgba(255, 255, 255, 0.05) !important;
+}
+
+/* Beautiful white texts with proper dark theme contrasts */
+.text-white {
+  color: #ffffff !important;
+}
+
+.text-white\/80, .text-white\/70, .text-on-surface {
+  color: #e5e2e1 !important;
+}
+
+.text-white\/60, .text-white\/50, .text-on-surface-variant {
+  color: #a3a3a3 !important;
+}
+
+.text-white\/40, .text-white\/30, .text-zinc-400, .text-zinc-500 {
+  color: #737373 !important;
+}
+
+.text-white\/20, .text-white\/10 {
+  color: #404040 !important;
+}
+
+/* Glow Borders */
+.border-white\/5 {
+  border-color: rgba(255, 255, 255, 0.05) !important;
+}
+.border-white\/10 {
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+.border-white\/15 {
+  border-color: rgba(255, 255, 255, 0.15) !important;
+}
+.border-white\/20 {
+  border-color: rgba(255, 255, 255, 0.2) !important;
+}
+.border-zinc-900 {
+  border-color: rgba(255, 255, 255, 0.06) !important;
+}
+
+/* Form Controls with sleek futuristic borders */
+input, select, textarea {
+  background-color: #0c0c0d !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: #00ff66 !important;
+  box-shadow: 0 0 0 1px #00ff66 !important;
+}
+
+/* Accelerator Emerald & Green shades */
+.text-primary-green {
+  color: #00ff66 !important;
+}
+
+.bg-primary-green {
+  background-color: #00ff66 !important;
+  color: #050505 !important;
+}
+
+.border-primary-green {
+  border-color: #00ff66 !important;
+}
+
+.bg-primary-green\/5 {
+  background-color: rgba(0, 255, 102, 0.05) !important;
+}
+
+.bg-primary-green\/10 {
+  background-color: rgba(0, 255, 102, 0.1) !important;
+}
+
+.border-primary-green\/20, .border-primary-green\/25, .border-primary-green\/30, .border-primary-green\/35, .border-primary-green\/40, .border-primary-green\/45 {
+  border-color: rgba(0, 255, 102, 0.3) !important;
+}
+
+/* Signals and badges override to gorgeous emerald */
+.text-emerald-600, .text-\[\#00ff66\], .text-\[\#00ff66\]\/60, .text-glow-green {
+  color: #00ff66 !important;
+  text-shadow: 0 0 15px rgba(0, 255, 102, 0.3);
+}
+
+.bg-emerald-50, .bg-\[\#00ff66\]\/10 {
+  background-color: rgba(0, 255, 102, 0.1) !important;
+}
+
+.bg-emerald-600 {
+  background-color: #00ff66 !important;
+  color: #000000 !important;
+}
+
+/* Glow Actions and Premium button transitions originally designed for the accelerator */
+.glow-btn {
+  box-shadow: 0 4px 10px rgba(0, 255, 102, 0.15) !important;
+  background-color: #00ff66 !important;
+  color: #050505 !important;
+  font-weight: 700;
+}
+
+.glow-btn:hover {
+  box-shadow: 0 10px 25px rgba(0, 255, 102, 0.45) !important;
+  background-color: #00e65c !important;
+}
+
+/* Background gradient styles and radial indicators */
+.bg-gradient-to-b.from-black.via-transparent.to-black {
+  background-image: linear-gradient(to bottom, #050505, transparent, #050505) !important;
+}
+
+.bg-primary-green\/5.blur-\[120px\] {
+  background-color: rgba(0, 255, 102, 0.05) !important;
+}
+
+.bg-primary-green\/10.blur-\[100px\] {
+  background-color: rgba(0, 255, 102, 0.1) !important;
+}
+
+/* Speedometer circular graph style dynamic override */
+circle[stroke="#00ff66"] {
+  stroke: #00ff66 !important;
+}
+
+@keyframes pulse-slow {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.animate-pulse-slow {
+  animation: pulse-slow 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Clean, elite page-break and styles specifically for formatting premium PDF summaries */
+@media print {
+  body {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+  }
+  
+  .bg-dark-bg, main, .bg-zinc-950, .bg-zinc-900, .bg-black {
+    background-color: #ffffff !important;
+    background-image: none !important;
+    color: #000000 !important;
+    border-color: #d1d5db !important;
+    box-shadow: none !important;
+  }
+  
+  header, footer, button, .no-print, [id="results-checklist-view-btn"] {
+    display: none !important;
+  }
+
+  h1, h2, h3, h4, span, p, div {
+    color: #000000 !important;
+    text-shadow: none !important;
+  }
+  
+  .text-primary-green {
+    color: #2563eb !important; /* blue for printable links representation */
+  }
+
+  .border-white\/5, .border-white\/10, .border-white\/20, .border-zinc-900 {
+    border-color: #d1d5db !important;
+  }
+
+  circle {
+    stroke: #2563eb !important;
+  }
+}
