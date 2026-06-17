@@ -184,7 +184,9 @@ app.post('/api/send-report', async (req, res) => {
       <div class="container">
         <div class="header">
           <div class="badge">Diagnostic Complete</div>
-          <h1 class="title">Page Profit Accelerator</h1>
+          <div style="margin-top: 10px;">
+            <img src="https://48129849.fs1.hubspotusercontent-na1.net/hubfs/48129849/Page%20Profit%20Accelerator/logo.webp" alt="Page Profit Accelerator" style="max-height: 40px; border: none; display: inline-block;">
+          </div>
         </div>
 
         <div class="score-box">
@@ -226,9 +228,12 @@ app.post('/api/send-report', async (req, res) => {
           </ul>
 
           <div class="btn-wrapper">
+            <div style="text-align: center; margin-bottom: 24px;">
+              <img src="https://48129849.fs1.hubspotusercontent-na1.net/hubfs/48129849/Page%20Profit%20Accelerator/checklist-cover.png.webp" alt="Page Profit Accelerator Book Cover" style="max-width: 160px; border-radius: 8px; box-shadow: 0 8px 24px rgba(0,0,0,0.4); border: none;">
+            </div>
             <a href="${finalPdfUrl}" class="btn-primary" target="_blank">Download Master Checklist PDF</a>
             <br/>
-            <p style="font-size: 12px; margin-top: 20px; color: #71717a;">Ready to plug the leaks and boost conversions? Schedule your 1-on-1 walkthrough.</p>
+            <p style="font-size: 12px; margin-top: 24px; color: #71717a;">Ready to plug the leaks and boost conversions? Schedule your 1-on-1 walkthrough.</p>
             <a href="${bookingUrl}" class="btn-secondary" target="_blank">Access Live Booking Calendar</a>
           </div>
 
