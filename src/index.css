@@ -1,197 +1,253 @@
-@import url('https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap');
 @import "tailwindcss";
 
 @theme {
   --font-sans: 'Inter', system-ui, sans-serif;
-  --font-anton: 'Anton', sans-serif;
-  --color-primary-green: #00ff66;
-  --color-dark-bg: #050505;
-  --color-surface-panel: #111111;
-  --color-surface-border: #1a1a1a;
+  --font-outfit: 'Outfit', sans-serif;
+  --font-anton: 'Outfit', sans-serif;
+  --color-primary-green: #10b981;
+  --color-dark-bg: #09090b;
+  --color-surface-panel: #18181b;
+  --color-surface-border: rgba(255, 255, 255, 0.08);
+  --color-on-surface: #f4f4f5;
+  --color-on-surface-variant: #a1a1aa;
 }
 
+/* ===== BASE STYLES ===== */
 body {
-  background-color: #050505;
-  color: #e5e2e1;
+  background-color: #09090b;
+  color: #f4f4f5;
   font-family: var(--font-sans);
+  background-image:
+    radial-gradient(ellipse at 50% -20%, rgba(16, 185, 129, 0.07) 0%, transparent 55%),
+    radial-gradient(ellipse at 100% 80%, rgba(16, 185, 129, 0.03) 0%, transparent 45%);
+  background-attachment: fixed;
 }
 
+/* ===== GRID PATTERN ===== */
 .bg-grid-tech {
-  background-size: 40px 40px;
-  background-image: 
-    radial-gradient(circle at 2px 2px, rgba(0, 255, 102, 0.04) 1px, transparent 0);
+  background-size: 60px 60px;
+  background-image:
+    radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.025) 1px, transparent 0);
 }
 
-/* Let's clear out all light overrides, setting theme colors to beautiful neon cosmic slate */
-
+/* ===== DARK BG OVERRIDE ===== */
 .bg-dark-bg {
-  background-color: #050505 !important;
+  background-color: #09090b !important;
 }
 
+/* ===== HEADER BACKGROUNDS ===== */
 header.bg-black\/75 {
-  background-color: rgba(5, 5, 5, 0.85) !important;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+  background-color: rgba(9, 9, 11, 0.8) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06) !important;
+  backdrop-filter: blur(20px) saturate(180%) !important;
 }
-
 header.bg-black\/80, header.bg-black\/85 {
-  background-color: rgba(5, 5, 5, 0.9) !important;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+  background-color: rgba(9, 9, 11, 0.88) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06) !important;
+  backdrop-filter: blur(20px) saturate(180%) !important;
 }
 
+/* ===== SURFACE CARDS ===== */
 .bg-zinc-950, .bg-zinc-950\/80, .bg-zinc-950\/60, .bg-zinc-950\/50 {
-  background-color: #0c0c0d !important;
-  border: 1px solid rgba(255, 255, 255, 0.05) !important;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5) !important;
+  background-color: #111113 !important;
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.6) !important;
 }
-
 .bg-zinc-900, .bg-zinc-900\/60, .bg-zinc-900\/50, .bg-zinc-900\/40 {
-  background-color: #121214 !important;
-  border: 1px solid rgba(255, 255, 255, 0.04) !important;
+  background-color: #18181b !important;
+  border: 1px solid rgba(255, 255, 255, 0.05) !important;
 }
-
 .bg-black, .bg-neutral-950, .bg-black\/40, .bg-black\/50, .bg-black\/60 {
-  background-color: #050505 !important;
+  background-color: #09090b !important;
   border: 1px solid rgba(255, 255, 255, 0.05) !important;
 }
 
-/* Beautiful white texts with proper dark theme contrasts */
-.text-white {
-  color: #ffffff !important;
-}
+/* ===== TEXT COLOURS ===== */
+.text-white          { color: #ffffff !important; }
+.text-white\/80, .text-white\/70, .text-on-surface { color: #f4f4f5 !important; }
+.text-white\/60, .text-white\/50, .text-on-surface-variant { color: #a1a1aa !important; }
+.text-white\/40, .text-white\/30, .text-zinc-400, .text-zinc-500 { color: #71717a !important; }
+.text-white\/20, .text-white\/10 { color: #3f3f46 !important; }
 
-.text-white\/80, .text-white\/70, .text-on-surface {
-  color: #e5e2e1 !important;
-}
+/* ===== BORDER OVERRIDES ===== */
+.border-white\/5  { border-color: rgba(255,255,255,0.05) !important; }
+.border-white\/10 { border-color: rgba(255,255,255,0.09) !important; }
+.border-white\/15 { border-color: rgba(255,255,255,0.12) !important; }
+.border-white\/20 { border-color: rgba(255,255,255,0.16) !important; }
+.border-zinc-900  { border-color: rgba(255,255,255,0.06) !important; }
 
-.text-white\/60, .text-white\/50, .text-on-surface-variant {
-  color: #a3a3a3 !important;
-}
-
-.text-white\/40, .text-white\/30, .text-zinc-400, .text-zinc-500 {
-  color: #737373 !important;
-}
-
-.text-white\/20, .text-white\/10 {
-  color: #404040 !important;
-}
-
-/* Glow Borders */
-.border-white\/5 {
-  border-color: rgba(255, 255, 255, 0.05) !important;
-}
-.border-white\/10 {
-  border-color: rgba(255, 255, 255, 0.1) !important;
-}
-.border-white\/15 {
-  border-color: rgba(255, 255, 255, 0.15) !important;
-}
-.border-white\/20 {
-  border-color: rgba(255, 255, 255, 0.2) !important;
-}
-.border-zinc-900 {
-  border-color: rgba(255, 255, 255, 0.06) !important;
-}
-
-/* Form Controls with sleek futuristic borders */
+/* ===== FORM CONTROLS ===== */
 input, select, textarea {
-  background-color: #0c0c0d !important;
-  color: #ffffff !important;
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  background-color: #111113 !important;
+  color: #f4f4f5 !important;
+  border: 1px solid rgba(255,255,255,0.09) !important;
+  border-radius: 12px;
+  transition: border-color 0.2s, box-shadow 0.2s;
 }
-
+input::placeholder, textarea::placeholder { color: #52525b !important; }
 input:focus, select:focus, textarea:focus {
-  border-color: #00ff66 !important;
-  box-shadow: 0 0 0 1px #00ff66 !important;
+  outline: none !important;
+  border-color: #10b981 !important;
+  box-shadow: 0 0 0 3px rgba(16,185,129,0.12) !important;
 }
+select option { background-color: #18181b !important; color: #f4f4f5 !important; }
 
-/* Accelerator Emerald & Green shades */
+/* ===== PRIMARY ACCENT — PREMIUM EMERALD ===== */
 .text-primary-green {
-  color: #00ff66 !important;
+  color: #10b981 !important;
 }
-
 .bg-primary-green {
-  background-color: #00ff66 !important;
-  color: #050505 !important;
+  background-color: #10b981 !important;
+  color: #fff !important;
 }
-
 .border-primary-green {
-  border-color: #00ff66 !important;
+  border-color: #10b981 !important;
+}
+.bg-primary-green\/5  { background-color: rgba(16,185,129,0.05) !important; }
+.bg-primary-green\/10 { background-color: rgba(16,185,129,0.10) !important; }
+.border-primary-green\/20,
+.border-primary-green\/25,
+.border-primary-green\/30,
+.border-primary-green\/35,
+.border-primary-green\/40,
+.border-primary-green\/45 {
+  border-color: rgba(16,185,129,0.28) !important;
 }
 
-.bg-primary-green\/5 {
-  background-color: rgba(0, 255, 102, 0.05) !important;
+/* Legacy green overrides → new emerald */
+.text-emerald-600,
+.text-\[\#00ff66\],
+.text-\[\#00ff66\]\/60,
+.text-glow-green {
+  color: #10b981 !important;
+  text-shadow: 0 0 20px rgba(16,185,129,0.25);
 }
+.bg-emerald-50, .bg-\[\#00ff66\]\/10 { background-color: rgba(16,185,129,0.08) !important; }
+.bg-emerald-600 { background-color: #10b981 !important; color: #ffffff !important; }
 
-.bg-primary-green\/10 {
-  background-color: rgba(0, 255, 102, 0.1) !important;
-}
+/* Inline hex literals used in some JSX */
+.text-\[\#00ff66\] { color: #10b981 !important; }
 
-.border-primary-green\/20, .border-primary-green\/25, .border-primary-green\/30, .border-primary-green\/35, .border-primary-green\/40, .border-primary-green\/45 {
-  border-color: rgba(0, 255, 102, 0.3) !important;
-}
-
-/* Signals and badges override to gorgeous emerald */
-.text-emerald-600, .text-\[\#00ff66\], .text-\[\#00ff66\]\/60, .text-glow-green {
-  color: #00ff66 !important;
-  text-shadow: 0 0 15px rgba(0, 255, 102, 0.3);
-}
-
-.bg-emerald-50, .bg-\[\#00ff66\]\/10 {
-  background-color: rgba(0, 255, 102, 0.1) !important;
-}
-
-.bg-emerald-600 {
-  background-color: #00ff66 !important;
-  color: #000000 !important;
-}
-
-/* Glow Actions and Premium button transitions originally designed for the accelerator */
+/* ===== GLOW BUTTON — Premium glass-mint ===== */
 .glow-btn {
-  box-shadow: 0 4px 10px rgba(0, 255, 102, 0.15) !important;
-  background-color: #00ff66 !important;
-  color: #050505 !important;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+  color: #ffffff !important;
   font-weight: 700;
+  box-shadow:
+    0 4px 14px rgba(16,185,129,0.25),
+    inset 0 1px 0 rgba(255,255,255,0.15) !important;
+  transition: all 0.25s cubic-bezier(0.34,1.56,0.64,1) !important;
+  letter-spacing: 0.04em;
 }
-
 .glow-btn:hover {
-  box-shadow: 0 10px 25px rgba(0, 255, 102, 0.45) !important;
-  background-color: #00e65c !important;
+  background: linear-gradient(135deg, #0ea472 0%, #047857 100%) !important;
+  box-shadow:
+    0 8px 28px rgba(16,185,129,0.40),
+    0 2px 8px rgba(16,185,129,0.20),
+    inset 0 1px 0 rgba(255,255,255,0.2) !important;
+  transform: translateY(-1px) !important;
+}
+.glow-btn:active {
+  transform: scale(0.97) translateY(0) !important;
 }
 
-/* Background gradient styles and radial indicators */
+/* ===== GRADIENT OVERLAYS ===== */
 .bg-gradient-to-b.from-black.via-transparent.to-black {
-  background-image: linear-gradient(to bottom, #050505, transparent, #050505) !important;
+  background-image: linear-gradient(to bottom, #09090b, transparent, #09090b) !important;
+}
+.bg-primary-green\/5.blur-\[120px\]  { background-color: rgba(16,185,129,0.06) !important; }
+.bg-primary-green\/10.blur-\[100px\] { background-color: rgba(16,185,129,0.10) !important; }
+
+/* ===== SVG CIRCLE (score gauge) ===== */
+circle[stroke="#00ff66"] { stroke: #10b981 !important; }
+circle[stroke="#10b981"] { stroke: #10b981 !important; }
+
+/* ===== GLASSMORPHISM CARD UTILITY ===== */
+.glass-card {
+  background: rgba(255,255,255,0.03);
+  backdrop-filter: blur(12px) saturate(160%);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.06);
 }
 
-.bg-primary-green\/5.blur-\[120px\] {
-  background-color: rgba(0, 255, 102, 0.05) !important;
+/* ===== SCROLL ENTRY ANIMATIONS ===== */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in, .animate-fade-in-up {
+  animation: fadeInUp 0.45s cubic-bezier(0.22,1,0.36,1) both;
 }
 
-.bg-primary-green\/10.blur-\[100px\] {
-  background-color: rgba(0, 255, 102, 0.1) !important;
+/* Scale entry for modals */
+@keyframes scaleUp {
+  from { opacity: 0; transform: scale(0.94); }
+  to   { opacity: 1; transform: scale(1); }
+}
+.animate-scale-up {
+  animation: scaleUp 0.35s cubic-bezier(0.22,1,0.36,1) both;
 }
 
-/* Speedometer circular graph style dynamic override */
-circle[stroke="#00ff66"] {
-  stroke: #00ff66 !important;
+/* ===== INFINITE MARQUEE SCROLL ===== */
+@keyframes infinite-scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+.animate-infinite-scroll {
+  animation: infinite-scroll 22s linear infinite;
 }
 
+/* ===== PULSE SLOW ===== */
 @keyframes pulse-slow {
   0%, 100% { opacity: 1; }
-  50% { opacity: 0.7; }
+  50%       { opacity: 0.6; }
+}
+.animate-pulse-slow { animation: pulse-slow 3s ease-in-out infinite; }
+
+/* ===== SPIN SLOW ===== */
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+.animate-spin-slow { animation: spin-slow 18s linear infinite; }
+
+/* ===== TYPOGRAPHY — Outfit headings ===== */
+h1, h2, h3, .font-anton {
+  font-family: 'Outfit', sans-serif !important;
+  font-weight: 800;
+  letter-spacing: -0.02em;
 }
 
-.animate-pulse-slow {
-  animation: pulse-slow 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+/* Override font-mono (kept as is) */
+.font-mono {
+  font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace !important;
+  letter-spacing: 0.04em;
 }
 
-/* Clean, elite page-break and styles specifically for formatting premium PDF summaries */
+/* ===== SELECTION ===== */
+::selection {
+  background-color: rgba(16,185,129,0.25);
+  color: #ffffff;
+}
+
+/* ===== SCROLLBAR — minimal emerald ===== */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: rgba(16,185,129,0.3);
+  border-radius: 99px;
+}
+::-webkit-scrollbar-thumb:hover { background: rgba(16,185,129,0.6); }
+
+/* ===== PRINT STYLES ===== */
 @media print {
   body {
     background-color: #ffffff !important;
     color: #000000 !important;
+    background-image: none !important;
   }
-  
   .bg-dark-bg, main, .bg-zinc-950, .bg-zinc-900, .bg-black {
     background-color: #ffffff !important;
     background-image: none !important;
@@ -199,25 +255,16 @@ circle[stroke="#00ff66"] {
     border-color: #d1d5db !important;
     box-shadow: none !important;
   }
-  
   header, footer, button, .no-print, [id="results-checklist-view-btn"] {
     display: none !important;
   }
-
   h1, h2, h3, h4, span, p, div {
     color: #000000 !important;
     text-shadow: none !important;
   }
-  
-  .text-primary-green {
-    color: #2563eb !important; /* blue for printable links representation */
-  }
-
+  .text-primary-green { color: #059669 !important; }
   .border-white\/5, .border-white\/10, .border-white\/20, .border-zinc-900 {
-    border-color: #d1d5db !important;
+    border-color: #e5e7eb !important;
   }
-
-  circle {
-    stroke: #2563eb !important;
-  }
+  circle { stroke: #059669 !important; }
 }

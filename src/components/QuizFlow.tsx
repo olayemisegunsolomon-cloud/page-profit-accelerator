@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import { QuizAnswers, Question } from '../types';
 import { QUESTIONS_LIST } from '../data';
-import { ArrowLeft, ArrowRight, ArrowDown, HelpCircle, Check, Play, Sparkles, User, Mail, MessageSquare, Landmark, Lock, ShieldCheck } from 'lucide-react';
+import {
+  ArrowLeft, ArrowRight, ArrowDown, Check, Sparkles,
+  User, Mail, MessageSquare, Landmark, Lock, ShieldCheck
+} from 'lucide-react';
 
 interface QuizFlowProps {
   onFinishQuiz: (answers: QuizAnswers, score: number) => void;
@@ -9,14 +12,9 @@ interface QuizFlowProps {
 }
 
 export default function QuizFlow({ onFinishQuiz, onBackToHome }: QuizFlowProps) {
-  // Current steps: 
-  // 1 = Contact info step
-  // 2 - 11 = Best practices questions (10 questions)
-  // 12 = Qualification step (obectives and obstacle big questions)
-  // 13 = Loading / processing screen
+  // Steps: 1 = Contact info | 2-11 = Best practices | 12 = Qualification | 13 = Loading
   const [currentStep, setCurrentStep] = useState<number>(1);
-  
-  // State for all questions as key-value
+
   const [formData, setFormData] = useState<Partial<QuizAnswers>>({
     fullName: '',
     email: '',
@@ -39,139 +37,69 @@ export default function QuizFlow({ onFinishQuiz, onBackToHome }: QuizFlowProps) 
     additionalNotes: ''
   });
 
-  // Tracking errors on inputs
   const [validationError, setValidationError] = useState<string>('');
 
-  // Current active questions list (Best Practices and Qualification)
   const bestPracticesQuestions = QUESTIONS_LIST.filter(q => q.stepType === 'practices');
   const qualificationQuestions = QUESTIONS_LIST.filter(q => q.stepType === 'qualification');
-
-  // Total steps in physical progression (1 = contact, 2..11 = practices questions, 12 = qualification questions summary, 13 = finish screen)
   const totalPhysicalSteps = 13;
 
-  // Handle simple text field changes
   const handleInputChange = (field: keyof QuizAnswers, value: string) => {
-    setFormData(prev => ({
-      ...prev,
-      [field]: value
-    }));
+    setFormData(prev => ({ ...prev, [field]: value }));
     setValidationError('');
   };
 
-  // Process and calculate final score before transition
   const calculateResultScore = (currentAnswers: Partial<QuizAnswers>): number => {
-    let score = 30; // base score representing baseline DTC benchmark
-
-    // Score from 10 best practices (Max 50 points, 5 points each)
+    let score = 30;
     bestPracticesQuestions.forEach(question => {
       const userAnswer = currentAnswers[question.id] as string;
       if (!userAnswer) return;
-
-      if (question.positiveOptions.includes(userAnswer)) {
-        score += 5; // Full score
-      } else if (question.partialOptions && question.partialOptions.includes(userAnswer)) {
-        score += 2.5; // Partial score
-      }
+      if (question.positiveOptions.includes(userAnswer)) score += 5;
+      else if (question.partialOptions && question.partialOptions.includes(userAnswer)) score += 2.5;
     });
-
-    // Score based on revenue level (Higher scale businesses get closer correlation metrics, Max 10 points)
     const revenueToBonus: Record<string, number> = {
-      'Under ₦10M': 2,
-      '₦10M – ₦50M': 5,
-      '₦50M – ₦150M': 8,
-      'Over ₦150M': 10,
-      '$0 - $10k': 2,
-      '$10k - $50k': 5,
-      '$50k - $250k': 8,
-      '$250k - $1M': 10,
-      '$1M+': 10,
+      'Under ₦10M': 2, '₦10M – ₦50M': 5, '₦50M – ₦150M': 8, 'Over ₦150M': 10,
+      '$0 - $10k': 2, '$10k - $50k': 5, '$50k - $250k': 8, '$250k - $1M': 10, '$1M+': 10,
     };
-    const revVal = currentAnswers.monthlyRevenue || '';
-    score += revenueToBonus[revVal] || 0;
-
-    // Score based on Qualification outcome metrics (Max 10 points)
+    score += revenueToBonus[currentAnswers.monthlyRevenue || ''] || 0;
     const sitToBonus: Record<string, number> = {
       'Early stage / struggling (< ₦10M revenue)': 2,
       'Stuck at 7 figures and frustrated with growth': 5,
       'Scaling past ₦50M and want faster growth': 9,
       'Already doing well but hitting a plateau': 10,
     };
-    const sitVal = currentAnswers.currentSituation || '';
-    score += sitToBonus[sitVal] || 0;
-
-    // Limit score between 10 and 100
-    const finalScore = Math.min(100, Math.max(15, Math.round(score)));
-    return finalScore;
+    score += sitToBonus[currentAnswers.currentSituation || ''] || 0;
+    return Math.min(100, Math.max(15, Math.round(score)));
   };
 
-  // Navigations
   const handleContactSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (!formData.fullName || formData.fullName.trim() === '') {
-      setValidationError('Please enter your full name.');
-      return;
-    }
-    if (!formData.email || !formData.email.includes('@')) {
-      setValidationError('Please enter a valid work email address.');
-      return;
-    }
-    if (!formData.whatsapp || formData.whatsapp.length < 6) {
-      setValidationError('Please enter your WhatsApp / mobile phone number.');
-      return;
-    }
-    if (!formData.monthlyRevenue) {
-      setValidationError('Please select your current monthly store revenue.');
-      return;
-    }
-
+    if (!formData.fullName?.trim()) { setValidationError('Please enter your full name.'); return; }
+    if (!formData.email?.includes('@')) { setValidationError('Please enter a valid work email address.'); return; }
+    if (!formData.whatsapp || formData.whatsapp.length < 6) { setValidationError('Please enter your WhatsApp / mobile number.'); return; }
+    if (!formData.monthlyRevenue) { setValidationError('Please select your current monthly store revenue.'); return; }
     setValidationError('');
-    setCurrentStep(2); // Jump to first practices question
+    setCurrentStep(2);
   };
 
   const handlePracticeSelect = (questionId: keyof QuizAnswers, optionValue: string) => {
-    setFormData(prev => ({
-      ...prev,
-      [questionId]: optionValue
-    }));
-
-    // Auto advance after short delay (400ms for sleek transition)
+    setFormData(prev => ({ ...prev, [questionId]: optionValue }));
     setTimeout(() => {
-      // Find current practices index
       const curIndex = bestPracticesQuestions.findIndex(q => q.id === questionId);
       if (curIndex !== -1 && curIndex < bestPracticesQuestions.length - 1) {
-        // Go to next practices question
         setCurrentStep(prev => prev + 1);
       } else {
-        // Switch to Qualification step
         setCurrentStep(12);
       }
-    }, 450);
+    }, 400);
   };
 
   const handleQualSubmit = () => {
-    // Check that required qualification fields are answered
-    if (!formData.currentSituation) {
-      setValidationError('Please select the description that best fits your current situation.');
-      return;
-    }
-    if (!formData.desiredOutcome) {
-      setValidationError('Please define your desired outcome over the next 90 days.');
-      return;
-    }
-    if (!formData.biggestObstacle) {
-      setValidationError('Please state your biggest obstacle.');
-      return;
-    }
-    if (!formData.preferredSolution) {
-      setValidationError('Please select your preferred solution type.');
-      return;
-    }
-
+    if (!formData.currentSituation) { setValidationError('Please select your current situation.'); return; }
+    if (!formData.desiredOutcome) { setValidationError('Please define your desired outcome.'); return; }
+    if (!formData.biggestObstacle) { setValidationError('Please state your biggest obstacle.'); return; }
+    if (!formData.preferredSolution) { setValidationError('Please select your preferred solution type.'); return; }
     setValidationError('');
-    setCurrentStep(13); // Spin loading screen
-
-    // Trigger simulation of 3 seconds then deliver results
+    setCurrentStep(13);
     setTimeout(() => {
       const finalScore = calculateResultScore(formData);
       onFinishQuiz(formData as QuizAnswers, finalScore);
@@ -180,186 +108,177 @@ export default function QuizFlow({ onFinishQuiz, onBackToHome }: QuizFlowProps) 
 
   const handlePrevStep = () => {
     setValidationError('');
-    if (currentStep > 1) {
-      setCurrentStep(prev => prev - 1);
-    } else {
-      onBackToHome();
-    }
+    if (currentStep > 1) setCurrentStep(prev => prev - 1);
+    else onBackToHome();
   };
 
-  // Determine section header based on current steps
-  const getSectionHeader = () => {
-    if (currentStep === 1) return 'SECTION 1: DISCOVERY';
-    if (currentStep >= 2 && currentStep <= 11) return 'SECTION 2: BEST PRACTICES';
-    return 'SECTION 3: QUALIFICATION';
+  const getSectionLabel = () => {
+    if (currentStep === 1) return { label: 'Step 1 of 3 · Your Details', sub: 'SECTION A' };
+    if (currentStep >= 2 && currentStep <= 11) return { label: `Question ${currentStep - 1} of 10`, sub: 'SECTION B · BEST PRACTICES' };
+    return { label: 'Final Questions', sub: 'SECTION C · QUALIFICATION' };
   };
 
-  // Calculate percentage of progress bar
-  const progressPercent = (currentStep / totalPhysicalSteps) * 100;
-
-  // Active question render
+  const progressPercent = ((currentStep - 1) / (totalPhysicalSteps - 1)) * 100;
   const isPracticesStep = currentStep >= 2 && currentStep <= 11;
   const currentPracticeIndex = currentStep - 2;
   const currentPracticeQuestion: Question | undefined = bestPracticesQuestions[currentPracticeIndex];
+  const { label: stepLabel, sub: sectionSub } = getSectionLabel();
+
+  const inputCls = "w-full bg-zinc-950/80 border border-white/8 rounded-xl py-3.5 px-4 text-white placeholder-zinc-600 focus:outline-none focus:border-primary-green focus:ring-2 focus:ring-primary-green/20 transition-all text-sm";
+  const labelCls = "text-[10px] font-bold text-on-surface-variant uppercase tracking-widest font-mono mb-1.5 block";
 
   return (
-    <div className="bg-dark-bg min-h-screen text-on-surface flex flex-col font-sans selection:bg-primary-green selection:text-dark-bg">
-      {/* Top Bar Navigation */}
-      <header className="w-full sticky top-0 z-50 bg-black/80 border-b border-white/5 backdrop-blur-md">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-          <div className="flex items-center gap-2 cursor-pointer" onClick={onBackToHome}>
-            <img 
-              alt="Page Profit Accelerator Logo" 
-              className="h-10 w-auto object-contain" 
-              src="/logo.png"
-            />
+    <div className="bg-dark-bg min-h-screen text-on-surface flex flex-col font-sans">
+
+      {/* ── HEADER ── */}
+      <header className="w-full sticky top-0 z-50 bg-black/80 border-b border-white/6 backdrop-blur-xl">
+        <div className="max-w-4xl mx-auto px-6 py-4 flex justify-between items-center">
+          <div className="flex items-center gap-3 cursor-pointer" onClick={onBackToHome}>
+            <img alt="Page Profit Accelerator" className="h-8 w-auto object-contain" src="/logo.png" />
           </div>
-          <div className="hidden md:flex items-center gap-2 text-xs font-bold tracking-widest text-[#00ff66]">
-            <span>START ASSESSMENT</span>
-            <Sparkles className="w-4 h-4 ml-1 animate-pulse" />
+          <div className="hidden md:flex items-center gap-2 text-[10px] font-bold tracking-widest text-primary-green uppercase">
+            <Sparkles className="w-4 h-4 animate-pulse" />
+            <span>Assessment In Progress</span>
           </div>
         </div>
       </header>
 
-      {/* Main Form Box */}
-      <main className="flex-grow flex flex-col items-center justify-start py-10 md:py-16 px-6 relative">
-        
-        {/* Progress Tracker Section (Only render if not on final loading screen) */}
+      {/* ── MAIN ── */}
+      <main className="flex-grow flex flex-col items-center justify-start py-10 md:py-14 px-5 relative">
+
+        {/* Progress bar (hidden on loading step) */}
         {currentStep < 13 && (
-          <div className="w-full max-w-3xl mb-10 transition-opacity duration-300">
-            <div className="flex justify-between items-end mb-2.5">
-              <span className="font-bold text-xs sm:text-sm text-primary-green tracking-wider uppercase font-mono">
-                {getSectionHeader()}
-              </span>
-              <span className="text-xs sm:text-sm font-bold text-white/40">
-                Step <span className="text-primary-green font-mono">{currentStep}</span> of {totalPhysicalSteps}
-              </span>
+          <div className="w-full max-w-2xl mb-10">
+            <div className="flex justify-between items-center mb-2.5">
+              <span className="text-[9px] font-mono font-bold text-primary-green tracking-widest uppercase">{sectionSub}</span>
+              <span className="text-[10px] font-semibold text-on-surface-variant">{stepLabel}</span>
             </div>
-            
-            {/* Double height high-tech styled progress bar */}
             <div className="w-full h-1 bg-zinc-900 rounded-full overflow-hidden">
-              <div 
-                className="h-full bg-primary-green transition-all duration-500 ease-out"
+              <div
+                className="h-full bg-primary-green rounded-full transition-all duration-500 ease-out shadow-[0_0_8px_rgba(16,185,129,0.4)]"
                 style={{ width: `${progressPercent}%` }}
-              ></div>
+              />
             </div>
           </div>
         )}
 
-        {/* Validation Alert */}
+        {/* Validation error */}
         {validationError && (
-          <div className="w-full max-w-3xl bg-red-950/40 border border-red-500/30 text-red-200 p-4 rounded-xl mb-6 text-sm flex items-center gap-3 animate-fade-in">
-            <span className="h-2 w-2 rounded-full bg-red-500 animate-ping"></span>
+          <div className="w-full max-w-2xl mb-6 bg-red-950/40 border border-red-500/25 text-red-300 p-4 rounded-xl text-sm flex items-center gap-3 animate-fade-in">
+            <span className="h-2 w-2 rounded-full bg-red-500 animate-ping shrink-0" />
             {validationError}
           </div>
         )}
 
-        <div className="w-full max-w-3xl">
-          {/* STEP 1: CONTACT INFO DISCOVERY */}
+        <div className="w-full max-w-2xl">
+
+          {/* ─── STEP 1: CONTACT INFO ─── */}
           {currentStep === 1 && (
             <section className="space-y-8 animate-fade-in">
               <div>
-                <h1 className="text-3xl sm:text-4xl lg:text-5xl font-anton text-white leading-tight uppercase mb-3">
-                  LET&apos;S START WITH THE FOUNDATION.
+                <span className="inline-block text-[9px] font-mono font-bold text-primary-green border border-primary-green/25 px-3 py-1 rounded-full uppercase tracking-widest bg-primary-green/5 mb-4">
+                  Let's Get Started
+                </span>
+                <h1 className="text-3xl sm:text-4xl font-extrabold text-white leading-tight uppercase mb-3" style={{ fontFamily: 'Outfit,sans-serif' }}>
+                  LET'S START WITH THE FOUNDATION.
                 </h1>
-                <p className="text-white/50 text-sm sm:text-base leading-relaxed">
-                  Tell us about your current operation so we can calibrate the accelerator for your specific volume.
+                <p className="text-on-surface-variant text-sm leading-relaxed">
+                  Tell us about your operation so we can calibrate the accelerator for your specific volume and goals.
                 </p>
               </div>
 
-              <form onSubmit={handleContactSubmit} className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  
-                  {/* Full Name */}
-                  <div className="flex flex-col gap-2">
-                    <label className="text-xs font-bold text-white/40 uppercase tracking-widest font-mono">
-                      Full Name
-                    </label>
+              <form onSubmit={handleContactSubmit} className="space-y-5">
+                {/* Row 1: Name + Email */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                  <div>
+                    <label className={labelCls}>Full Name</label>
                     <div className="relative">
-                      <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-white/30" />
-                      <input 
-                        type="text" 
+                      <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-600 pointer-events-none" />
+                      <input
+                        type="text"
                         value={formData.fullName}
-                        onChange={(e) => handleInputChange('fullName', e.target.value)}
-                        placeholder="Olayemi Solomon" 
-                        className="w-full bg-zinc-950/60 border border-white/10 rounded-xl py-4 pl-12 pr-4 text-white focus:outline-none focus:border-primary-green focus:ring-1 focus:ring-primary-green transition-all"
+                        onChange={e => handleInputChange('fullName', e.target.value)}
+                        placeholder="Olayemi Solomon"
+                        className={inputCls.replace('px-4', 'pl-10 pr-4')}
                       />
                     </div>
                   </div>
-
-                  {/* Work Email */}
-                  <div className="flex flex-col gap-2">
-                    <label className="text-xs font-bold text-white/40 uppercase tracking-widest font-mono">
-                      Work Email
-                    </label>
+                  <div>
+                    <label className={labelCls}>Work Email</label>
                     <div className="relative">
-                      <input 
-                        type="email" 
+                      <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-600 pointer-events-none" />
+                      <input
+                        type="email"
                         value={formData.email}
-                        onChange={(e) => handleInputChange('email', e.target.value)}
-                        placeholder="olayemi@brand.com" 
-                        className="w-full bg-zinc-950/60 border border-white/10 rounded-xl py-4 px-4 text-white focus:outline-none focus:border-primary-green focus:ring-1 focus:ring-primary-green transition-all"
+                        onChange={e => handleInputChange('email', e.target.value)}
+                        placeholder="olayemi@brand.com"
+                        className={inputCls.replace('px-4', 'pl-10 pr-4')}
                       />
                     </div>
                   </div>
-
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  
-                  {/* WhatsApp/Phone code input with details */}
-                  <div className="flex flex-col gap-2">
-                    <label className="text-xs font-bold text-white/40 uppercase tracking-widest font-mono flex items-center justify-between">
-                      <span>WhatsApp / Phone</span>
-                      <span className="text-[9px] text-[#00ff66] font-mono normal-case">FOR DIRECT ACCELERATOR PDF ACCORDINGLY</span>
+                {/* Row 2: WhatsApp + Revenue */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                  <div>
+                    <label className={labelCls}>
+                      WhatsApp / Phone
+                      <span className="ml-2 text-primary-green normal-case font-normal tracking-normal text-[8px]">For your PDF delivery</span>
                     </label>
                     <div className="relative">
-                      <input 
-                        type="tel" 
+                      <MessageSquare className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-600 pointer-events-none" />
+                      <input
+                        type="tel"
                         value={formData.whatsapp}
-                        onChange={(e) => handleInputChange('whatsapp', e.target.value)}
-                        placeholder="+234 (812) 345-6789" 
-                        className="w-full bg-zinc-950/60 border border-white/10 rounded-xl py-4 px-4 text-white focus:outline-none focus:border-primary-green focus:ring-1 focus:ring-primary-green transition-all"
+                        onChange={e => handleInputChange('whatsapp', e.target.value)}
+                        placeholder="+234 (812) 345-6789"
+                        className={inputCls.replace('px-4', 'pl-10 pr-4')}
                       />
                     </div>
                   </div>
-
-                  {/* Current Monthly store revenue dropdown listing */}
-                  <div className="flex flex-col gap-2 font-sans">
-                    <label className="text-xs font-bold text-white/40 uppercase tracking-widest font-mono">
-                      Current Monthly Revenue
-                    </label>
+                  <div>
+                    <label className={labelCls}>Current Monthly Revenue</label>
                     <div className="relative">
-                      <select 
+                      <Landmark className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-600 pointer-events-none" />
+                      <select
                         value={formData.monthlyRevenue}
-                        onChange={(e) => handleInputChange('monthlyRevenue', e.target.value)}
-                        className="w-full bg-zinc-950/60 border border-white/10 rounded-xl py-4 px-4 text-white focus:outline-none focus:border-primary-green focus:ring-1 focus:ring-primary-green transition-all appearance-none cursor-pointer"
+                        onChange={e => handleInputChange('monthlyRevenue', e.target.value)}
+                        className={inputCls.replace('px-4', 'pl-10 pr-10') + ' appearance-none cursor-pointer'}
                       >
                         <option value="" disabled>Select Revenue Range</option>
                         <option value="Under ₦10M">Under ₦10M (or Under $10k)</option>
-                        <option value="₦10M – ₦50M">₦10M – ₦50M (or $10k - $50k)</option>
-                        <option value="₦10M – ₦50M">₦50M – ₦150M (or $50k - $250k)</option>
+                        <option value="₦10M – ₦50M">₦10M – ₦50M (or $10k – $50k)</option>
+                        <option value="₦50M – ₦150M">₦50M – ₦150M (or $50k – $250k)</option>
                         <option value="Over ₦150M">Over ₦150M (or Over $250k)</option>
                       </select>
-                      <ArrowDown className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30 pointer-events-none" />
+                      <ArrowDown className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-600 pointer-events-none" />
                     </div>
                   </div>
-
                 </div>
 
-                <div className="pt-8 flex justify-between items-center border-t border-white/5">
-                  <button 
+                {/* Privacy note */}
+                <div className="flex items-center gap-2.5 bg-primary-green/5 border border-primary-green/15 rounded-xl p-3.5">
+                  <Lock className="w-4 h-4 text-primary-green shrink-0" />
+                  <p className="text-[11px] text-on-surface-variant leading-relaxed">
+                    <strong className="text-white">100% Confidential.</strong> Your data is encrypted and never shared. Used only to personalise your report.
+                  </p>
+                </div>
+
+                {/* Nav */}
+                <div className="pt-6 flex justify-between items-center border-t border-white/5">
+                  <button
                     type="button"
                     onClick={onBackToHome}
-                    className="text-white/40 font-bold text-xs uppercase tracking-wider flex items-center gap-2 hover:text-white transition-colors"
+                    className="text-on-surface-variant/60 font-semibold text-xs uppercase tracking-wider flex items-center gap-2 hover:text-white transition-colors"
                   >
-                    <ArrowLeft className="w-4 h-4" /> Back to Home
+                    <ArrowLeft className="w-4 h-4" /> Back
                   </button>
-                  <button 
+                  <button
                     type="submit"
-                    className="glow-btn bg-primary-green text-dark-bg font-anton px-8 py-4.5 rounded-xl text-md uppercase tracking-wider flex items-center gap-2 transition-all cursor-pointer shadow-lg hover:brightness-110 active:scale-95"
+                    className="glow-btn px-8 py-3.5 rounded-xl text-sm uppercase tracking-wider flex items-center gap-2 font-extrabold cursor-pointer"
+                    style={{ fontFamily: 'Outfit,sans-serif' }}
                   >
-                    <span>CONTINUE</span>
+                    Continue
                     <ArrowRight className="w-4 h-4" />
                   </button>
                 </div>
@@ -367,255 +286,230 @@ export default function QuizFlow({ onFinishQuiz, onBackToHome }: QuizFlowProps) 
             </section>
           )}
 
-          {/* QUESTIONS 5 - 14: BEST PRACTICES DYNAMIC FLOW */}
+          {/* ─── STEPS 2-11: BEST PRACTICES ─── */}
           {isPracticesStep && currentPracticeQuestion && (
-            <section className="space-y-8 animate-fade-in" key={currentPracticeQuestion.id}>
+            <section className="space-y-7 animate-fade-in" key={currentPracticeQuestion.id}>
               <div>
-                <span className="text-[10px] font-mono text-primary-green border border-primary-green/20 px-3 py-1 rounded-full uppercase tracking-widest bg-primary-green/5 inline-block mb-3">
+                <span className="inline-block text-[9px] font-mono font-bold text-primary-green border border-primary-green/25 px-3 py-1 rounded-full uppercase tracking-widest bg-primary-green/5 mb-4">
                   {currentPracticeQuestion.title}
                 </span>
-                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-anton text-white leading-tight uppercase">
+                <h1 className="text-2xl sm:text-3xl font-extrabold text-white leading-tight uppercase" style={{ fontFamily: 'Outfit,sans-serif' }}>
                   {currentPracticeQuestion.description}
                 </h1>
               </div>
 
-              {/* Multi-choice options listing */}
-              <div className="grid grid-cols-1 gap-4">
+              <div className="grid grid-cols-1 gap-3">
                 {currentPracticeQuestion.options.map((option, idx) => {
                   const isSelected = formData[currentPracticeQuestion.id] === option;
                   return (
                     <button
                       key={idx}
                       onClick={() => handlePracticeSelect(currentPracticeQuestion.id, option)}
-                      className={`w-full text-left p-6 rounded-xl border transition-all flex items-center justify-between group cursor-pointer ${
-                        isSelected 
-                          ? 'bg-zinc-900 border-primary-green text-white shadow-md shadow-primary-green/5' 
-                          : 'bg-zinc-950/60 border-white/5 text-white/70 hover:border-primary-green/40 hover:bg-zinc-900/40 hover:text-white'
+                      className={`w-full text-left p-5 rounded-xl border transition-all duration-200 flex items-center justify-between group cursor-pointer ${
+                        isSelected
+                          ? 'bg-primary-green/10 border-primary-green text-white shadow-[0_0_20px_rgba(16,185,129,0.08)]'
+                          : 'bg-zinc-950/60 border-white/6 text-on-surface-variant hover:border-primary-green/30 hover:bg-zinc-900/40 hover:text-white'
                       }`}
                     >
-                      <span className="text-sm sm:text-base font-semibold leading-relaxed">
-                        {option}
-                      </span>
-                      
-                      {/* Check/Bullet radio circle indicator */}
-                      <span className={`h-6 w-6 rounded-full border flex items-center justify-center transition-all ${
-                        isSelected 
-                          ? 'border-primary-green bg-primary-green/20 text-primary-green' 
-                          : 'border-white/10 group-hover:border-primary-green/45 text-transparent'
+                      <span className="text-sm font-semibold leading-relaxed">{option}</span>
+                      <span className={`h-5 w-5 rounded-full border flex items-center justify-center shrink-0 transition-all ml-4 ${
+                        isSelected
+                          ? 'border-primary-green bg-primary-green text-white'
+                          : 'border-white/15 group-hover:border-primary-green/40'
                       }`}>
-                        <Check className="w-3.5 h-3.5 font-bold" />
+                        {isSelected && <Check className="w-3 h-3 stroke-[3]" />}
                       </span>
                     </button>
                   );
                 })}
               </div>
 
-              {/* Navigation Footer */}
-              <div className="pt-8 flex justify-between items-center border-t border-white/5">
-                <button 
+              <div className="pt-6 flex justify-between items-center border-t border-white/5">
+                <button
                   type="button"
                   onClick={handlePrevStep}
-                  className="text-white/40 font-bold text-xs uppercase tracking-wider flex items-center gap-2 hover:text-white transition-colors cursor-pointer"
+                  className="text-on-surface-variant/60 font-semibold text-xs uppercase tracking-wider flex items-center gap-2 hover:text-white transition-colors cursor-pointer"
                 >
                   <ArrowLeft className="w-4 h-4" /> Back
                 </button>
-                <div className="text-[10px] font-mono text-white/20 uppercase tracking-widest">
-                  AUTO-ADVANCE ENABLED // V2026
+                <div className="text-[9px] font-mono text-on-surface-variant/30 uppercase tracking-widest">
+                  AUTO-ADVANCE ENABLED
                 </div>
               </div>
             </section>
           )}
 
-          {/* STEP 12: QUALIFICATION TEXT DETAILS AND MAIN OBSTACLES */}
+          {/* ─── STEP 12: QUALIFICATION ─── */}
           {currentStep === 12 && (
-            <section className="space-y-8 animate-fade-in">
+            <section className="space-y-7 animate-fade-in">
               <div>
-                <h1 className="text-3xl sm:text-4xl lg:text-5xl font-anton text-white leading-tight uppercase">
-                  THE FINAL STRETCH.
+                <span className="inline-block text-[9px] font-mono font-bold text-primary-green border border-primary-green/25 px-3 py-1 rounded-full uppercase tracking-widest bg-primary-green/5 mb-4">
+                  Final Stretch
+                </span>
+                <h1 className="text-3xl sm:text-4xl font-extrabold text-white leading-tight uppercase mb-2" style={{ fontFamily: 'Outfit,sans-serif' }}>
+                  ALMOST THERE.
                 </h1>
-                <p className="text-white/50 text-sm sm:text-base leading-relaxed">
-                  Help us understand your current commercial standing, top objectives, and what is strictly slowing your growth.
+                <p className="text-on-surface-variant text-sm leading-relaxed">
+                  Help us understand your current commercial situation, top objectives, and what's slowing your growth.
                 </p>
               </div>
 
-              <div className="space-y-6">
-                
-                {/* Situation Dropdown Choice */}
-                <div className="flex flex-col gap-2">
-                  <label className="text-xs font-bold text-white/40 uppercase tracking-widest font-mono">
-                    Which best describes your current situation?
-                  </label>
+              <div className="space-y-5">
+                {/* Current situation */}
+                <div>
+                  <label className={labelCls}>Which best describes your current situation?</label>
                   <div className="relative">
                     <select
                       value={formData.currentSituation}
-                      onChange={(e) => handleInputChange('currentSituation', e.target.value)}
-                      className="w-full bg-zinc-950/60 border border-white/10 rounded-xl py-4 px-4 text-white focus:outline-none focus:border-primary-green focus:ring-1 focus:ring-primary-green transition-all appearance-none cursor-pointer"
+                      onChange={e => handleInputChange('currentSituation', e.target.value)}
+                      className={inputCls + ' appearance-none cursor-pointer pr-10'}
                     >
                       <option value="" disabled>Select Situation</option>
                       {qualificationQuestions.find(q => q.id === 'currentSituation')?.options.map((opt, i) => (
                         <option value={opt} key={i}>{opt}</option>
                       ))}
                     </select>
-                    <ArrowDown className="absolute right-4 top-1/2 -translate-y-1/2 w-4_h-4 text-white/30 pointer-events-none" />
+                    <ArrowDown className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-600 pointer-events-none" />
                   </div>
                 </div>
 
-                {/* Outcome Dropdown Choice */}
-                <div className="flex flex-col gap-2">
-                  <label className="text-xs font-bold text-white/40 uppercase tracking-widest font-mono">
-                    What’s your #1 desired outcome in the next 90 days?
-                  </label>
+                {/* Desired outcome */}
+                <div>
+                  <label className={labelCls}>What's your #1 desired outcome in the next 90 days?</label>
                   <div className="relative">
                     <select
                       value={formData.desiredOutcome}
-                      onChange={(e) => handleInputChange('desiredOutcome', e.target.value)}
-                      className="w-full bg-zinc-950/60 border border-white/10 rounded-xl py-4 px-4 text-white focus:outline-none focus:border-primary-green focus:ring-1 focus:ring-primary-green transition-all appearance-none cursor-pointer"
+                      onChange={e => handleInputChange('desiredOutcome', e.target.value)}
+                      className={inputCls + ' appearance-none cursor-pointer pr-10'}
                     >
-                      <option value="" disabled>Select Target</option>
+                      <option value="" disabled>Select Target Outcome</option>
                       {qualificationQuestions.find(q => q.id === 'desiredOutcome')?.options.map((opt, i) => (
                         <option value={opt} key={i}>{opt}</option>
                       ))}
                     </select>
-                    <ArrowDown className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30 pointer-events-none" />
+                    <ArrowDown className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-600 pointer-events-none" />
                   </div>
                 </div>
 
-                {/* Obstacle Long text input */}
-                <div className="flex flex-col gap-2">
-                  <label className="text-xs font-bold text-white/40 uppercase tracking-widest font-mono">
-                    What’s the biggest obstacle holding you back right now?
-                  </label>
-                  <textarea 
+                {/* Biggest obstacle */}
+                <div>
+                  <label className={labelCls}>What's the biggest obstacle holding you back right now?</label>
+                  <textarea
                     value={formData.biggestObstacle}
-                    onChange={(e) => handleInputChange('biggestObstacle', e.target.value)}
-                    placeholder="E.g. High CPC, low landing page conversion, attribution issues, lack of time..." 
+                    onChange={e => handleInputChange('biggestObstacle', e.target.value)}
+                    placeholder="E.g. High CPC, low landing page conversion, attribution issues, lack of time..."
                     rows={3}
-                    className="w-full bg-zinc-950/60 border border-white/10 rounded-xl p-4 text-white focus:outline-none focus:border-primary-green focus:ring-1 focus:ring-primary-green transition-all resize-none text-sm"
+                    className={inputCls + ' resize-none'}
                   />
                 </div>
 
-                {/* Solution preference Dropdown choice */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  
-                  <div className="flex flex-col gap-2">
-                    <label className="text-xs font-bold text-white/40 uppercase tracking-widest font-mono">
-                      Which solution would suit you best?
-                    </label>
+                {/* Solution + notes */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                  <div>
+                    <label className={labelCls}>Which solution would suit you best?</label>
                     <div className="relative">
                       <select
                         value={formData.preferredSolution}
-                        onChange={(e) => handleInputChange('preferredSolution', e.target.value)}
-                        className="w-full bg-zinc-950/60 border border-white/10 rounded-xl py-4 px-4 text-white focus:outline-none focus:border-primary-green focus:ring-1 focus:ring-primary-green transition-all appearance-none cursor-pointer"
+                        onChange={e => handleInputChange('preferredSolution', e.target.value)}
+                        className={inputCls + ' appearance-none cursor-pointer pr-10'}
                       >
                         <option value="" disabled>Select Preference</option>
                         {qualificationQuestions.find(q => q.id === 'preferredSolution')?.options.map((opt, i) => (
                           <option value={opt} key={i}>{opt}</option>
                         ))}
                       </select>
-                      <ArrowDown className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30 pointer-events-none" />
+                      <ArrowDown className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-600 pointer-events-none" />
                     </div>
                   </div>
-
-                  <div className="flex flex-col gap-2">
-                    <label className="text-xs font-bold text-white/40 uppercase tracking-widest font-mono">
-                      Anything else we should know? <span className="text-[10px] text-white/20 italic">(Optional)</span>
+                  <div>
+                    <label className={labelCls}>
+                      Anything else we should know?
+                      <span className="ml-2 text-zinc-600 normal-case font-normal tracking-normal text-[8px]">(Optional)</span>
                     </label>
-                    <input 
+                    <input
                       type="text"
                       value={formData.additionalNotes}
-                      onChange={(e) => handleInputChange('additionalNotes', e.target.value)}
-                      placeholder="E.g. built on Shopify, custom templates, etc." 
-                      className="w-full bg-zinc-950/60 border border-white/10 rounded-xl py-4 px-4 text-white focus:outline-none focus:border-primary-green focus:ring-1 focus:ring-primary-green transition-all"
+                      onChange={e => handleInputChange('additionalNotes', e.target.value)}
+                      placeholder="E.g. Built on Shopify, custom templates..."
+                      className={inputCls}
                     />
                   </div>
-
                 </div>
-
               </div>
 
-              {/* Footer navigation */}
-              <div className="pt-8 flex justify-between items-center border-t border-white/5">
-                <button 
+              <div className="pt-6 flex justify-between items-center border-t border-white/5">
+                <button
                   type="button"
                   onClick={handlePrevStep}
-                  className="text-white/40 font-bold text-xs uppercase tracking-wider flex items-center gap-2 hover:text-white transition-colors cursor-pointer"
+                  className="text-on-surface-variant/60 font-semibold text-xs uppercase tracking-wider flex items-center gap-2 hover:text-white transition-colors cursor-pointer"
                 >
                   <ArrowLeft className="w-4 h-4" /> Back
                 </button>
-                <button 
+                <button
                   type="button"
                   onClick={handleQualSubmit}
-                  className="glow-btn bg-primary-green text-dark-bg font-anton px-8 py-4.5 rounded-xl text-md uppercase tracking-wider flex items-center gap-2 transition-all cursor-pointer shadow-lg shadow-primary-green/10"
+                  className="glow-btn px-8 py-3.5 rounded-xl text-sm uppercase tracking-wider flex items-center gap-2 font-extrabold cursor-pointer"
+                  style={{ fontFamily: 'Outfit,sans-serif' }}
                 >
-                  <span>GENERATE REPORT</span>
+                  Generate My Report
                   <ArrowRight className="w-4 h-4" />
                 </button>
               </div>
             </section>
           )}
 
-          {/* STEP 13: LOADING SPLASH SCREEN WITH THE "ANALYSIS COMPLETE" INTERACTIVE BAR */}
+          {/* ─── STEP 13: LOADING ─── */}
           {currentStep === 13 && (
-            <section className="text-center py-12 animate-fade-in flex flex-col items-center justify-center">
-              <div className="mb-8 inline-flex items-center justify-center w-20 h-20 sm:w-24 sm:h-24 bg-primary-green/10 border-2 border-primary-green rounded-full shadow-lg shadow-primary-green/20">
-                <ShieldCheck className="w-10 h-10 sm:w-12 sm:h-12 text-primary-green animate-bounce" />
+            <section className="text-center py-16 animate-fade-in flex flex-col items-center justify-center min-h-[60vh]">
+              {/* Icon ring */}
+              <div className="relative mb-8">
+                <div className="w-24 h-24 rounded-full bg-primary-green/10 border border-primary-green/25 flex items-center justify-center shadow-[0_0_40px_rgba(16,185,129,0.15)]">
+                  <ShieldCheck className="w-12 h-12 text-primary-green" />
+                </div>
+                <span className="absolute -top-1 -right-1 flex h-5 w-5">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary-green opacity-50" />
+                  <span className="relative inline-flex rounded-full h-5 w-5 bg-primary-green" />
+                </span>
               </div>
-              
-              <h1 className="font-anton text-3xl sm:text-4xl lg:text-5xl text-primary-green uppercase mb-4 tracking-normal">
-                ANALYSIS COMPLETE
+
+              <h1 className="font-extrabold text-3xl sm:text-4xl text-white uppercase mb-3 tracking-tight" style={{ fontFamily: 'Outfit,sans-serif' }}>
+                Analysis Complete
               </h1>
-              
-              <p className="text-white/60 text-sm sm:text-base max-w-md mx-auto mb-10 leading-relaxed font-sans">
-                Your performance data is being processed. Our optimization engine is calculating metrics over your custom conversion loops and technical leaks...
+              <p className="text-on-surface-variant text-sm max-w-sm mx-auto mb-10 leading-relaxed">
+                Your performance data is being processed. Our optimization engine is calculating metrics across your conversion loops and technical leaks...
               </p>
 
-              {/* Loading Bar Slider detail */}
-              <div className="relative overflow-hidden bg-zinc-900 h-2 w-full max-w-sm rounded-full mx-auto mb-4">
-                <div className="h-full bg-primary-green rounded-full animate-marquee-load"></div>
+              {/* Progress bar */}
+              <div className="relative overflow-hidden bg-zinc-900 h-1.5 w-full max-w-xs rounded-full mx-auto mb-3">
+                <div className="h-full bg-primary-green rounded-full shadow-[0_0_10px_rgba(16,185,129,0.5)]" style={{ animation: 'marquee-load 3.2s ease-in-out forwards' }} />
               </div>
-
-              <p className="font-mono text-xs text-[#00ff66]/60 uppercase tracking-widest font-semibold">
-                CALIBRATING ACCELERATOR MATRIX PATHS...
+              <p className="font-mono text-[10px] text-primary-green/60 uppercase tracking-widest">
+                Calibrating Accelerator Matrix...
               </p>
+
+              <style>{`
+                @keyframes marquee-load {
+                  0%   { width: 0%; }
+                  60%  { width: 72%; }
+                  100% { width: 100%; }
+                }
+              `}</style>
             </section>
           )}
 
         </div>
       </main>
 
-      {/* Styled animation keyframes within CSS */}
-      <style>{`
-        @keyframes marquee-load {
-          0% { width: 0%; }
-          50% { width: 68%; }
-          100% { width: 100%; }
-        }
-        .animate-marquee-load {
-          animation: marquee-load 3s ease-in-out forwards;
-        }
-        @keyframes fadeIn {
-          from { opacity: 0; transform: translateY(10px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        .animate-fade-in {
-          animation: fadeIn 0.4s ease-out forwards;
-        }
-      `}</style>
-
-      {/* Shared Footer component matching design */}
-      <footer className="w-full bg-neutral-950 border-t border-white/5 mt-auto">
-        <div className="max-w-7xl mx-auto px-6 py-8 flex flex-col sm:flex-row justify-between items-center gap-4">
-          <div className="font-anton text-2xl text-primary-green uppercase tracking-wider">
-            PAGE PROFIT
+      {/* ── FOOTER ── */}
+      <footer className="w-full bg-zinc-950/50 border-t border-white/5 mt-auto">
+        <div className="max-w-4xl mx-auto px-6 py-6 flex flex-col sm:flex-row justify-between items-center gap-3 text-[10px] text-on-surface-variant/40 uppercase tracking-widest font-mono">
+          <img alt="Page Profit Accelerator" className="h-6 w-auto object-contain brightness-0 invert opacity-40 hover:opacity-90 transition-opacity" src="/logo.png" />
+          <div className="flex gap-5">
+            <a href="/privacy" className="hover:text-primary-green transition-colors">Privacy</a>
+            <a href="/terms" className="hover:text-primary-green transition-colors">Terms</a>
+            <a href="/support" className="hover:text-primary-green transition-colors">Support</a>
           </div>
-          <div className="flex flex-col items-center sm:items-end gap-1.5 text-[10px] text-white/30 font-sans uppercase">
-            <div className="flex gap-4">
-              <a href="/privacy" className="hover:text-primary-green transition-colors">Privacy Policy</a>
-              <a href="/terms" className="hover:text-primary-green transition-colors">Terms of Service</a>
-              <a href="/support" className="hover:text-primary-green transition-colors">Contact Support</a>
-            </div>
-            <p>© 2026 PAGE PROFIT ACCELERATOR. ALL RIGHTS RESERVED.</p>
-          </div>
+          <span>© 2026 Page Profit Accelerator</span>
         </div>
       </footer>
     </div>

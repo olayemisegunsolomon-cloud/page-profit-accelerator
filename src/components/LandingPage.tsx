@@ -250,7 +250,20 @@ export default function LandingPage({ onStartQuiz }: LandingPageProps) {
             
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
               
-              {/* The Bio Profile representation */}
+              {/* Olayemi Photo Column (Left side) */}
+              <div className="lg:col-span-5 relative group overflow-hidden rounded-2xl border border-white/8 min-h-[420px] bg-zinc-950 flex items-stretch">
+                <img 
+                  alt="Olayemi - DTC Growth Engineer" 
+                  className="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-105" 
+                  src="/olayemi.png" 
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-transparent pointer-events-none" />
+                <div className="absolute bottom-6 left-6 bg-primary-green text-zinc-950 font-extrabold text-[10px] sm:text-xs uppercase tracking-widest px-4 py-2.5 rounded-lg shadow-xl" style={{ fontFamily: 'Outfit,sans-serif' }}>
+                  99.9% Reliability
+                </div>
+              </div>
+
+              {/* Bio + metrics (Right side) */}
               <div className="lg:col-span-7 bg-zinc-950 border border-white/10 rounded-2xl p-6 sm:p-10 flex flex-col justify-between overflow-hidden relative">
                 <div className="absolute top-0 right-0 w-64 h-64 bg-primary-green/10 blur-[100px] pointer-events-none"></div>
                 
@@ -314,42 +327,88 @@ export default function LandingPage({ onStartQuiz }: LandingPageProps) {
                 </div>
               </div>
               
-              {/* Testimonial: Glass card panel */}
-              <div className="lg:col-span-5 flex flex-col gap-6">
-                
-                <div className="bg-zinc-900/60 border border-white/15 p-8 sm:p-10 rounded-2xl flex-grow flex flex-col justify-center relative overflow-hidden backdrop-blur-xl">
-                  <div className="absolute top-6 left-6 text-primary-green/10 font-anton text-8xl leading-none select-none">“</div>
-                  
-                  <p className="text-lg sm:text-xl text-white italic leading-relaxed mb-6 relative z-10 font-medium">
-                    “I took the Page Profit Accelerator and immediately saw exactly where my store was leaking money. <strong className="text-primary-green font-bold">The checklist alone was worth it.</strong> It gave me clarity I’ve been missing for months.”
+            </div>
+          </div>
+        </section>
+
+        {/* ── TESTIMONIALS SECTION ── */}
+        <section id="testimonials" className="py-20 px-6 relative overflow-hidden bg-black/20">
+          <div className="max-w-5xl mx-auto space-y-12">
+            
+            {/* Logo Cloud / Trust Bar */}
+            <div className="relative w-full overflow-hidden py-6 border-y border-white/5 bg-zinc-950/20 backdrop-blur-sm">
+              <div className="flex flex-wrap justify-center items-center gap-x-16 gap-y-6 opacity-30 grayscale hover:opacity-90 transition-all duration-300">
+                <div className="flex items-center gap-2 text-white font-extrabold tracking-tight text-xs">
+                  <span className="h-5 w-5 bg-white/10 rounded flex items-center justify-center text-white text-[10px] font-mono font-bold">ZC</span>
+                  <span className="tracking-[0.1em]">ZUMAR CONS</span>
+                </div>
+                <div className="flex items-center gap-1.5 text-white font-bold text-sm">
+                  <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
+                    <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                  </svg>
+                  <span>GitHub</span>
+                </div>
+                <div className="text-white italic font-serif tracking-widest text-base">Mathew Co.</div>
+                <div className="text-white font-black tracking-tighter text-lg">archin</div>
+                <div className="flex items-center gap-1.5 text-white font-mono tracking-widest text-[11px] font-bold">
+                  <span className="h-2 w-2 rounded-full bg-primary-green animate-pulse" />
+                  <span>SYSTEM_SECURED</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Testimonial card */}
+            <div className="relative bg-zinc-950/80 border border-white/8 rounded-[2rem] p-8 sm:p-14 overflow-hidden backdrop-blur-xl">
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-primary-green/5 blur-[120px] rounded-full pointer-events-none" />
+              
+              <div className="relative z-10 grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
+                {/* Circular client badge on left */}
+                <div className="col-span-1 md:col-span-4 flex justify-center relative">
+                  <div className="relative w-28 h-28 flex items-center justify-center">
+                    <svg viewBox="0 0 100 100" className="w-28 h-28 animate-spin-slow text-primary-green">
+                      <path id="circlePath" d="M 50, 50 m -37, 0 a 37,37 0 1,1 74,0 a 37,37 0 1,1 -74,0" fill="none" />
+                      <text className="fill-current text-[7.5px] font-bold uppercase tracking-[0.14em]">
+                        <textPath href="#circlePath" startOffset="0%">
+                          TRUSTED BY CLIENTS • TRUSTED BY CLIENTS •
+                        </textPath>
+                      </text>
+                    </svg>
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <svg className="w-6 h-6 text-primary-green fill-current rotate-180" viewBox="0 0 24 24">
+                        <path d="M9.983 3v7.391c0 5.704-3.731 9.57-8.983 10.609l-.995-2.151c2.432-.917 3.995-2.638 3.995-5.022h-4v-10.827h10zm14 0v7.391c0 5.704-3.748 9.571-9 10.609l-.996-2.151c2.433-.917 3.996-2.638 3.996-5.022h-4v-10.827h10z"/>
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Quote details on right */}
+                <div className="col-span-1 md:col-span-8 space-y-6">
+                  <p className="text-lg sm:text-xl font-bold leading-relaxed text-white" style={{ fontFamily: 'Outfit,sans-serif' }}>
+                    "I took the Page Profit Accelerator and immediately saw exactly where my store was leaking money. <span className="text-primary-green font-bold">The checklist alone was worth it.</span> It gave me clarity I've been missing for months."
                   </p>
                   
-                  <div className="flex items-center gap-4 pt-6 border-t border-white/5">
-                    <div className="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center border border-white/10">
-                      <User className="w-5 h-5 text-white/40" />
+                  <div className="h-px bg-white/5 w-full" />
+                  
+                  <div className="flex items-center justify-between gap-4">
+                    <div className="flex items-center gap-3.5">
+                      <div className="w-11 h-11 rounded-full bg-zinc-900 border border-white/10 flex items-center justify-center text-primary-green font-bold text-sm">
+                        LF
+                      </div>
+                      <div>
+                        <p className="font-extrabold text-white text-sm uppercase tracking-wide" style={{ fontFamily: 'Outfit,sans-serif' }}>Lagos DTC Founder</p>
+                        <p className="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider mt-0.5">8-Figure E-Commerce Store</p>
+                      </div>
                     </div>
-                    <div>
-                      <p className="font-anton text-white uppercase text-base leading-none">Lagos DTC Founder</p>
-                      <p className="text-[8px] sm:text-[9px] font-bold text-primary-green uppercase tracking-widest mt-1">8-Figure E-commerce Entrepreneur</p>
+                    
+                    {/* Pagination Indicator resembling Bradley Gordon's section */}
+                    <div className="flex items-center gap-1 bg-zinc-900/60 border border-white/5 px-3 py-1.5 rounded-full">
+                      <span className="h-1.5 w-1.5 bg-primary-green rounded-full" />
+                      <span className="h-1.5 w-1.5 bg-white/20 rounded-full" />
+                      <span className="h-1.5 w-1.5 bg-white/20 rounded-full" />
                     </div>
                   </div>
                 </div>
-                
-                {/* Tech Badge card details */}
-                <div className="bg-primary-green/10 border border-primary-green/25 p-5 rounded-2xl flex items-center justify-between">
-                  <div className="text-[9px] font-mono text-primary-green uppercase leading-tight tracking-wider">
-                    STATUS: HIGH PERFORMANCE<br/>
-                    RELIABILITY: 99.9%
-                  </div>
-                  <div className="flex gap-1.5">
-                    <div className="w-2 h-2 bg-primary-green rounded-full"></div>
-                    <div className="w-2 h-2 bg-primary-green rounded-full opacity-50"></div>
-                    <div className="w-2 h-2 bg-primary-green rounded-full opacity-20"></div>
-                  </div>
-                </div>
-                
               </div>
-              
             </div>
           </div>
         </section>
